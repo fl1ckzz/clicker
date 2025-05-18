@@ -57,7 +57,7 @@ function setLang(lang) {
     btn.textContent = 'Клик!';
     resetBtn.textContent = 'Сбросить';
     cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
-    langBtn.innerHTML = '<img src="flags/britan.png" alt="EN" width="24" style="vertical-align:middle;"> EN';
+    langBtn.innerHTML = '<img src="flags/britan.png" alt="RU" width="24" style="vertical-align:middle;"> RU';
     currentLang = 'ru';
   }
 }
