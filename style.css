@@ -34,10 +34,9 @@ body {
 h1 {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 3.2em;
-    color: #fff;
+    color: #1db954; /* такой же цвет, как у счетчика */
     letter-spacing: 4px;
     margin-bottom: 20px;
-    /* убрано свечение */
     text-shadow: none;
     background: none;
     -webkit-background-clip: unset;
@@ -50,14 +49,6 @@ h1 {
     background-color: rgba(255,255,255,0.10);
     display: inline-block;
 }
-
-h1:hover {
-    text-shadow: none;
-    letter-spacing: 8px;
-    color: #1db954;
-    border-color: #b8ffb8;
-}
-
 .counter {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 2em; /* уменьшенный размер */
@@ -79,6 +70,7 @@ h1:hover {
     border-color: #6affb8;
 }
 #clickBtn {
+    color: #fff;
     background-color: rgb(117, 230, 117);
     border-radius: 50%;
     height: 220px;
@@ -102,6 +94,7 @@ h1:hover {
 }
 
 #resetBtn {
+    color: #fff;
     background-color: rgb(226, 138, 142);
     border-radius: 30px; /* плавно округлые края */
     height: 60px;
@@ -132,10 +125,41 @@ h1:hover {
   gap: 20px; /* расстояние между кнопками */
 }
 .main {
-  margin-top: 80px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px; /* расстояние между кнопками */
+}
+#langBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, #b8ffb8 0%, #7be495 100%);
+    color: #1db954;
+    border: 2px solid #a5ffce;
+    border-radius: 18px;
+    padding: 8px 22px 8px 16px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(80,200,120,0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
+    outline: none;
+}
+#langBtn img {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+#langBtn:hover {
+    background: linear-gradient(90deg, #7be495 0%, #b8ffb8 100%);
+    color: #fff;
+    border-color: #43e97b;
+    box-shadow: 0 4px 20px rgba(80,200,120,0.18);
+    transform: scale(1.05);
+}
+html {
+  touch-action: manipulation;
 }
 
