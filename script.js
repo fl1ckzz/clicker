@@ -50,14 +50,14 @@ function setLang(lang) {
     btn.textContent = 'Click!';
     resetBtn.textContent = 'Reset';
     cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
-    langBtn.innerHTML = '<img src="flags/russia.png" alt="RU" width="24" style="vertical-align:middle;"> RU';
+   langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/russia.png" width="24" style="vertical-align:middle;"> RU';
     currentLang = 'en';
   } else {
     title.textContent = 'Кликер';
     btn.textContent = 'Клик!';
     resetBtn.textContent = 'Сбросить';
     cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
-    langBtn.innerHTML = '<img src="flags/britan.png" alt="RU" width="24" style="vertical-align:middle;"> RU';
+  langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/britan.png" width="24" style="vertical-align:middle;"> RU';
     currentLang = 'ru';
   }
 }
