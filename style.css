@@ -125,7 +125,7 @@ h1 {
   gap: 20px; /* расстояние между кнопками */
 }
 .main {
-  margin-top: 0px;
+  margin-top: -20px;
   display: flex;
   flex-direction: column;
   align-items: center;
