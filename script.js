@@ -1,7 +1,12 @@
 const counter = document.getElementById('counter');
 const btn = document.getElementById('clickBtn');
 const resetBtn = document.getElementById('resetBtn');
+const title = document.querySelector('h1');
+const langBtn = document.getElementById('langBtn');
+const flagIcon = document.getElementById('flagIcon');
+const langText = document.getElementById('langText');
 
+let currentLang = localStorage.getItem('lang') || 'ru';
 
 let count = Number(localStorage.getItem('counter')) || 0;
 counter.textContent = count;
@@ -10,6 +15,7 @@ btn.addEventListener('click', () => {
   count++;
   counter.textContent = count;
   localStorage.setItem('counter', count);
+  clickCount++;
 });
 
 resetBtn.addEventListener('click', () => {
@@ -17,9 +23,10 @@ resetBtn.addEventListener('click', () => {
   counter.textContent = count;
   localStorage.setItem('counter', count);
 });
+
+// --- Клики в секунду ---
 let clickCount = 0;
 let clicksPerSecond = 0;
-
 
 const cpsDisplay = document.createElement('div');
 cpsDisplay.style.marginTop = '30px';
@@ -33,37 +40,7 @@ cpsDisplay.style.textAlign = 'center';
 cpsDisplay.style.boxShadow = '0 2px 12px rgba(80,200,120,0.08)';
 cpsDisplay.innerText = 'Кликов в секунду: 0';
 
-const buttons = document.querySelector('.buttons');
-buttons.appendChild(cpsDisplay);
-
-btn.addEventListener('click', () => {
-  clickCount++;
-});
-
-const langBtn = document.getElementById('langBtn');
-const title = document.querySelector('h1');
-let currentLang = 'ru';
-
-function setLang(lang) {
-  if (lang === 'en') {
-    title.textContent = 'Clicker';
-    btn.textContent = 'Click!';
-    resetBtn.textContent = 'Reset';
-    cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
-   langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/russia.png" width="24" style="vertical-align:middle;"> RU';
-    currentLang = 'en';
-  } else {
-    title.textContent = 'Кликер';
-    btn.textContent = 'Клик!';
-    resetBtn.textContent = 'Сбросить';
-    cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
-  langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/britan.png" width="24" style="vertical-align:middle;"> RU';
-    currentLang = 'ru';
-  }
-}
-langBtn.addEventListener('click', () => {
-  setLang(currentLang === 'ru' ? 'en' : 'ru');
-});
+document.querySelector('.buttons').appendChild(cpsDisplay);
 
 setInterval(() => {
   clicksPerSecond = clickCount;
@@ -74,3 +51,34 @@ setInterval(() => {
   }
   clickCount = 0;
 }, 1000);
+
+// --- Смена языка ---
+function setLang(lang) {
+  if (lang === 'en') {
+    title.textContent = 'Clicker';
+    btn.textContent = 'Click!';
+    resetBtn.textContent = 'Reset';
+    cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
+    flagIcon.src = 'https://fl1ckzz.github.io/clicker/flags/russia.png';
+    flagIcon.alt = 'RU';
+    langText.textContent = 'RU';
+    currentLang = 'en';
+  } else {
+    title.textContent = 'Кликер';
+    btn.textContent = 'Клик!';
+    resetBtn.textContent = 'Сбросить';
+    cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
+    flagIcon.src = 'https://fl1ckzz.github.io/clicker/flags/britan.png';
+    flagIcon.alt = 'EN';
+    langText.textContent = 'EN';
+    currentLang = 'ru';
+  }
+  localStorage.setItem('lang', currentLang);
+}
+
+langBtn.addEventListener('click', () => {
+  setLang(currentLang === 'ru' ? 'en' : 'ru');
+});
+
+// Применить язык при загрузке
+setLang(currentLang);
