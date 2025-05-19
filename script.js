@@ -24,7 +24,6 @@ resetBtn.addEventListener('click', () => {
   localStorage.setItem('counter', count);
 });
 
-// --- Клики в секунду ---
 let clickCount = 0;
 let clicksPerSecond = 0;
 
@@ -52,7 +51,6 @@ setInterval(() => {
   clickCount = 0;
 }, 1000);
 
-// --- Смена языка ---
 function setLang(lang) {
   if (lang === 'en') {
     title.textContent = 'Clicker';
@@ -80,5 +78,10 @@ langBtn.addEventListener('click', () => {
   setLang(currentLang === 'ru' ? 'en' : 'ru');
 });
 
-// Применить язык при загрузке
 setLang(currentLang);
+
+const themeToggle = document.getElementById('themeToggle');
+
+themeToggle.addEventListener('change', () => {
+  document.body.classList.toggle('dark', themeToggle.checked);
+});
