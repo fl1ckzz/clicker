@@ -1,13 +1,21 @@
 const counter = document.getElementById('counter');
 const btn = document.getElementById('clickBtn');
 const resetBtn = document.getElementById('resetBtn');
-
+const langBtn = document.getElementById('langBtn');
+const title = document.querySelector('h1');
+const themeToggle = document.getElementById('themeToggle');
 
 let count = Number(localStorage.getItem('counter')) || 0;
+let clickCount = 0;
+let clicksPerSecond = 0;
+let currentLang = 'ru';
+
 counter.textContent = count;
 
+// Счётчики
 btn.addEventListener('click', () => {
   count++;
+  clickCount++;
   counter.textContent = count;
   localStorage.setItem('counter', count);
 });
@@ -17,10 +25,8 @@ resetBtn.addEventListener('click', () => {
   counter.textContent = count;
   localStorage.setItem('counter', count);
 });
-let clickCount = 0;
-let clicksPerSecond = 0;
 
-
+// Создание блока CPS
 const cpsDisplay = document.createElement('div');
 cpsDisplay.style.marginTop = '30px';
 cpsDisplay.style.padding = '10px 24px';
@@ -32,18 +38,9 @@ cpsDisplay.style.borderRadius = '18px';
 cpsDisplay.style.textAlign = 'center';
 cpsDisplay.style.boxShadow = '0 2px 12px rgba(80,200,120,0.08)';
 cpsDisplay.innerText = 'Кликов в секунду: 0';
+document.querySelector('.buttons').appendChild(cpsDisplay);
 
-const buttons = document.querySelector('.buttons');
-buttons.appendChild(cpsDisplay);
-
-btn.addEventListener('click', () => {
-  clickCount++;
-});
-
-const langBtn = document.getElementById('langBtn');
-const title = document.querySelector('h1');
-let currentLang = 'ru';
-
+// Смена языка
 function setLang(lang) {
   if (lang === 'en') {
     title.textContent = 'Clicker';
@@ -61,22 +58,21 @@ function setLang(lang) {
     currentLang = 'ru';
   }
 }
+
 langBtn.addEventListener('click', () => {
   setLang(currentLang === 'ru' ? 'en' : 'ru');
 });
 
+// Обновление CPS
 setInterval(() => {
   clicksPerSecond = clickCount;
-  if (currentLang === 'en') {
-    cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
-  } else {
-    cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
-  }
+  cpsDisplay.innerText = currentLang === 'en'
+    ? `Clicks per second: ${clicksPerSecond}`
+    : `Кликов в секунду: ${clicksPerSecond}`;
   clickCount = 0;
 }, 1000);
 
-const themeToggle = document.getElementById('themeToggle');
-
+// Переключение темы
 themeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark', themeToggle.checked);
 });
