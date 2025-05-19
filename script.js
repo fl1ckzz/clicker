@@ -24,6 +24,7 @@ resetBtn.addEventListener('click', () => {
   localStorage.setItem('counter', count);
 });
 
+
 let clickCount = 0;
 let clicksPerSecond = 0;
 
@@ -50,6 +51,7 @@ setInterval(() => {
   }
   clickCount = 0;
 }, 1000);
+
 
 function setLang(lang) {
   if (lang === 'en') {
@@ -78,6 +80,9 @@ langBtn.addEventListener('click', () => {
   setLang(currentLang === 'ru' ? 'en' : 'ru');
 });
 
+
 setLang(currentLang);
+
+
 
 
