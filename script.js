@@ -24,13 +24,12 @@ function updateUserDisplay() {
   }
 }
 
-// если пользователь уже вошёл
+
 if (username) {
   loginScreen.style.display = 'none';
   updateUserDisplay();
 }
 
-// когда вводит имя
 startBtn.addEventListener('click', () => {
   const input = usernameInput.value.trim();
   if (input !== '') {
@@ -80,7 +79,6 @@ cpsDisplay.style.boxShadow = '0 2px 12px rgba(80,200,120,0.08)';
 cpsDisplay.innerText = 'Кликов в секунду: 0';
 document.querySelector('.buttons').appendChild(cpsDisplay);
 
-// Смена языка
 function setLang(lang) {
   if (lang === 'en') {
     userDisplay.textContent = `Hi, ${username}!`;
@@ -105,7 +103,6 @@ langBtn.addEventListener('click', () => {
   setLang(currentLang === 'ru' ? 'en' : 'ru');
 });
 
-// Обновление CPS
 setInterval(() => {
   clicksPerSecond = clickCount;
   cpsDisplay.innerText = currentLang === 'en'
@@ -114,7 +111,6 @@ setInterval(() => {
   clickCount = 0;
 }, 1000);
 
-// Переключение темы
 themeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark', themeToggle.checked);
 });
@@ -132,7 +128,6 @@ async function loadTopPlayers() {
       return;
     }
 
-    // Убираем дубликаты по имени, оставляя запись с наибольшим счётом
     const uniquePlayersMap = new Map();
     data.forEach(player => {
       if (
@@ -168,7 +163,6 @@ async function saveOrUpdatePlayer(name, score) {
   const storedId = localStorage.getItem('userId');
   try {
     if (storedId) {
-      // Обновляем игрока по сохранённому ID
       console.log(`Обновляем игрока с ID: ${storedId}`);
       await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${storedId}`, {
         method: 'PUT',
@@ -178,14 +172,13 @@ async function saveOrUpdatePlayer(name, score) {
         body: JSON.stringify({ name, score })
       });
     } else {
-      // Пробуем найти игрока по имени
       const response = await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players?name=${encodeURIComponent(name)}`);
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
         const player = data[0];
         console.log(`Нашли игрока по имени: ${player.name}, ID: ${player.id}`);
-        localStorage.setItem('userId', player.id); // Сохраняем ID
+        localStorage.setItem('userId', player.id); 
         await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${player.id}`, {
           method: 'PUT',
           headers: {
@@ -194,7 +187,6 @@ async function saveOrUpdatePlayer(name, score) {
           body: JSON.stringify({ name, score })
         });
       } else {
-        // Игрока нет — создаём нового
         console.log(`Создаём нового игрока: ${name}`);
         const createRes = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players', {
           method: 'POST',
@@ -204,7 +196,7 @@ async function saveOrUpdatePlayer(name, score) {
           body: JSON.stringify({ name, score })
         });
         const newPlayer = await createRes.json();
-        localStorage.setItem('userId', newPlayer.id); // Сохраняем ID
+        localStorage.setItem('userId', newPlayer.id); 
       }
     }
   } catch (e) {
