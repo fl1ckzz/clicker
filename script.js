@@ -122,11 +122,19 @@ themeToggle.addEventListener('change', () => {
 const leaderboardList = document.getElementById('leaderList');
 
 async function loadTopPlayers() {
+  const leaderboardList = document.getElementById('leaderboard');
   try {
-    const res = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players');
-    const players = await res.json();
-    
-    const topPlayers = players
+    const response = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players');
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      console.error('Ошибка: данные с сервера не являются массивом', data);
+      leaderboardList.innerHTML = '<li>Ошибка: некорректные данные с сервера</li>';
+      return;
+    }
+
+    const topPlayers = data
+      .filter(player => typeof player.score === 'number')
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
 
@@ -146,14 +154,12 @@ async function loadTopPlayers() {
 loadTopPlayers();
 
 async function saveOrUpdatePlayer(name, score) {
+  const storedId = localStorage.getItem('userId');
   try {
-    const response = await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players?name=${encodeURIComponent(name)}`);
-    const data = await response.json();
-
-    if (data.length > 0) {
-      // Игрок найден — обновим
-      const player = data[0];
-      await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${player.id}`, {
+    if (storedId) {
+      // Обновляем игрока по сохранённому ID
+      console.log(`Обновляем игрока с ID: ${storedId}`);
+      await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${storedId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -161,17 +167,37 @@ async function saveOrUpdatePlayer(name, score) {
         body: JSON.stringify({ name, score })
       });
     } else {
-      // Игрока нет — создаём
-      await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, score })
-      });
+      // Пробуем найти игрока по имени
+      const response = await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players?name=${encodeURIComponent(name)}`);
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        const player = data[0];
+        console.log(`Нашли игрока по имени: ${player.name}, ID: ${player.id}`);
+        localStorage.setItem('userId', player.id); // Сохраняем ID
+        await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${player.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, score })
+        });
+      } else {
+        // Игрока нет — создаём нового
+        console.log(`Создаём нового игрока: ${name}`);
+        const createRes = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, score })
+        });
+        const newPlayer = await createRes.json();
+        localStorage.setItem('userId', newPlayer.id); // Сохраняем ID
+      }
     }
   } catch (e) {
-    console.error('Ошибка при сохранении игрока:', e);
+    console.error('Ошибка при сохранении или обновлении игрока:', e);
   }
 }
 
