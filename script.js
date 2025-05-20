@@ -1,6 +1,5 @@
 const counter = document.getElementById('counter');
 const btn = document.getElementById('clickBtn');
-const resetBtn = document.getElementById('resetBtn');
 const langBtn = document.getElementById('langBtn');
 const title = document.querySelector('h1');
 const themeToggle = document.getElementById('themeToggle');
@@ -20,11 +19,6 @@ btn.addEventListener('click', () => {
   localStorage.setItem('counter', count);
 });
 
-resetBtn.addEventListener('click', () => {
-  count = 0;
-  counter.textContent = count;
-  localStorage.setItem('counter', count);
-});
 
 // Создание блока CPS
 const cpsDisplay = document.createElement('div');
@@ -45,14 +39,12 @@ function setLang(lang) {
   if (lang === 'en') {
     title.textContent = 'Clicker';
     btn.textContent = 'Click!';
-    resetBtn.textContent = 'Reset';
     cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
     langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/russia.png" alt="RU" width="24" style="vertical-align:middle;"> RU';
     currentLang = 'en';
   } else {
     title.textContent = 'Кликер';
     btn.textContent = 'Клик!';
-    resetBtn.textContent = 'Сбросить';
     cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
     langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/britan.png" alt="EN" width="24" style="vertical-align:middle;"> EN';
     currentLang = 'ru';
