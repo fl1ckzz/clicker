@@ -54,6 +54,7 @@ let currentLang = 'ru';
 
 counter.textContent = count;
 const clickSound = new Audio('https://fl1ckzz.github.io/clicker/sounds/click.mp3');
+clickSound.load()
 btn.addEventListener('click', () => {
   clickSound.currentTime = 0;
   clickSound.play();
