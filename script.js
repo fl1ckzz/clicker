@@ -1,3 +1,46 @@
+const loginScreen = document.getElementById('loginScreen');
+const startBtn = document.getElementById('startBtn');
+const usernameInput = document.getElementById('usernameInput');
+
+let username = localStorage.getItem('username');
+
+if (username) {
+  loginScreen.style.display = 'none';
+}
+
+startBtn.addEventListener('click', () => {
+  const input = usernameInput.value.trim();
+  if (input !== '') {
+    localStorage.setItem('username', input);
+    username = input;
+    loginScreen.style.display = 'none';
+  }
+});
+const userDisplay = document.getElementById('userDisplay');
+
+function updateUserDisplay() {
+  if (username) {
+    userDisplay.textContent = `Привет, ${username}!`;
+  }
+}
+
+// если пользователь уже вошёл
+if (username) {
+  loginScreen.style.display = 'none';
+  updateUserDisplay();
+}
+
+// когда вводит имя
+startBtn.addEventListener('click', () => {
+  const input = usernameInput.value.trim();
+  if (input !== '') {
+    localStorage.setItem('username', input);
+    username = input;
+    loginScreen.style.display = 'none';
+    updateUserDisplay();
+  }
+});
+
 const counter = document.getElementById('counter');
 const btn = document.getElementById('clickBtn');
 const langBtn = document.getElementById('langBtn');
@@ -11,16 +54,19 @@ let currentLang = 'ru';
 
 counter.textContent = count;
 
-// Счётчики
 btn.addEventListener('click', () => {
   count++;
   clickCount++;
   counter.textContent = count;
   localStorage.setItem('counter', count);
+
+  if (username) {
+    saveOrUpdatePlayer(username, count); 
+  }
 });
 
 
-// Создание блока CPS
+const leaderboardTitle = document.querySelector('.leaderboard h3');
 const cpsDisplay = document.createElement('div');
 cpsDisplay.style.marginTop = '30px';
 cpsDisplay.style.padding = '10px 24px';
@@ -37,16 +83,20 @@ document.querySelector('.buttons').appendChild(cpsDisplay);
 // Смена языка
 function setLang(lang) {
   if (lang === 'en') {
+    userDisplay.textContent = `Hi, ${username}!`;
     title.textContent = 'Clicker';
     btn.textContent = 'Click!';
     cpsDisplay.innerText = `Clicks per second: ${clicksPerSecond}`;
     langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/russia.png" alt="RU" width="24" style="vertical-align:middle;"> RU';
+    leaderboardTitle.textContent = '🏆 Top 3 players:';
     currentLang = 'en';
   } else {
+    userDisplay.textContent = `Привет, ${username}!`;
     title.textContent = 'Кликер';
     btn.textContent = 'Клик!';
     cpsDisplay.innerText = `Кликов в секунду: ${clicksPerSecond}`;
     langBtn.innerHTML = '<img src="https://fl1ckzz.github.io/clicker/flags/britan.png" alt="EN" width="24" style="vertical-align:middle;"> EN';
+    leaderboardTitle.textContent = '🏆 Топ 3 игрока:';
     currentLang = 'ru';
   }
 }
@@ -69,5 +119,60 @@ themeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark', themeToggle.checked);
 });
 
+const leaderboardList = document.getElementById('leaderList');
+
+async function loadTopPlayers() {
+  try {
+    const res = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players');
+    const players = await res.json();
+    
+    const topPlayers = players
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    leaderboardList.innerHTML = '';
+
+    topPlayers.forEach((player, index) => {
+      const li = document.createElement('li');
+      li.textContent = `${index + 1}. ${player.name} — ${player.score}`;
+      leaderboardList.appendChild(li);
+    });
+  } catch (error) {
+    leaderboardList.innerHTML = '<li>Ошибка загрузки рейтинга</li>';
+    console.error('Ошибка при загрузке топ-игроков:', error);
+  }
+}
+
+loadTopPlayers();
+
+async function saveOrUpdatePlayer(name, score) {
+  try {
+    const response = await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players?name=${encodeURIComponent(name)}`);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      // Игрок найден — обновим
+      const player = data[0];
+      await fetch(`https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players/${player.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, score })
+      });
+    } else {
+      // Игрока нет — создаём
+      await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, score })
+      });
+    }
+  } catch (e) {
+    console.error('Ошибка при сохранении игрока:', e);
+  }
+}
 
 
