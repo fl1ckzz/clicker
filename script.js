@@ -53,8 +53,10 @@ let clicksPerSecond = 0;
 let currentLang = 'ru';
 
 counter.textContent = count;
-
+const clickSound = new Audio('https://fl1ckzz.github.io/clicker/sounds/click.mp3');
 btn.addEventListener('click', () => {
+  clickSound.currentTime = 0;
+  clickSound.play();
   count++;
   clickCount++;
   counter.textContent = count;
