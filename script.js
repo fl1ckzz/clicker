@@ -119,10 +119,9 @@ themeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark', themeToggle.checked);
 });
 
-const leaderboardList = document.getElementById('leaderList');
-
 async function loadTopPlayers() {
-  const leaderboardList = document.getElementById('leaderboard');
+  const leaderboardList = document.getElementById('leaderList');
+
   try {
     const response = await fetch('https://682c5a3bd29df7a95be6a5d6.mockapi.io/api/players');
     const data = await response.json();
@@ -133,8 +132,20 @@ async function loadTopPlayers() {
       return;
     }
 
-    const topPlayers = data
-      .filter(player => typeof player.score === 'number')
+    // Убираем дубликаты по имени, оставляя запись с наибольшим счётом
+    const uniquePlayersMap = new Map();
+    data.forEach(player => {
+      if (
+        typeof player.score === 'number' &&
+        (!uniquePlayersMap.has(player.name) || player.score > uniquePlayersMap.get(player.name).score)
+      ) {
+        uniquePlayersMap.set(player.name, player);
+      }
+    });
+
+    const uniquePlayers = Array.from(uniquePlayersMap.values());
+
+    const topPlayers = uniquePlayers
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
 
@@ -145,12 +156,12 @@ async function loadTopPlayers() {
       li.textContent = `${index + 1}. ${player.name} — ${player.score}`;
       leaderboardList.appendChild(li);
     });
+
   } catch (error) {
     leaderboardList.innerHTML = '<li>Ошибка загрузки рейтинга</li>';
     console.error('Ошибка при загрузке топ-игроков:', error);
   }
 }
-
 loadTopPlayers();
 
 async function saveOrUpdatePlayer(name, score) {
